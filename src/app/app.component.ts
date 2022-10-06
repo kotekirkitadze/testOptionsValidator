@@ -6,17 +6,18 @@ import {
   FormGroup,
 } from '@angular/forms';
 
-function getAllIndexes(arr: any, val: any) {
+function getAllIndexes(arr: string[], val: string | undefined) {
   var indexes = [],
     i = -1;
-  while ((i = arr.indexOf(val, i + 1)) != -1) {
-    indexes.push(i);
-  }
+  if (val)
+    while ((i = arr.indexOf(val, i + 1)) != -1) {
+      indexes.push(i);
+    }
   return indexes;
 }
 
-function toFindDuplicatesIndices(arry: any[]) {
-  const duplicateElement = arry.find((item: any, index: any) => {
+function toFindDuplicatesIndices(arry: string[]) {
+  const duplicateElement = arry.find((item: string, index: number) => {
     return item != '' && arry.indexOf(item) !== index;
   });
   return getAllIndexes(arry, duplicateElement);
@@ -75,9 +76,5 @@ export class AppComponent {
 
   removeOption(i: number) {
     this.getOptionsForm?.removeAt(i);
-  }
-
-  bla(a: any, i: any) {
-    return a?.errors?.duplicated;
   }
 }
