@@ -3,6 +3,7 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
 } from '@angular/forms';
 
@@ -23,7 +24,7 @@ function toFindDuplicatesIndices(arry: string[]) {
   return getAllIndexes(arry, duplicateElement);
 }
 
-export function passwordMatcher(
+export function optionsUniqueValidator(
   c: AbstractControl
 ): { [key: string]: boolean } | null {
   const values = (c as FormArray<FormGroup>)['controls'].map(
@@ -54,7 +55,7 @@ export function passwordMatcher(
 export class AppComponent {
   form: FormGroup = new FormGroup({
     options: new FormArray([this.buildOptionForm()], {
-      validators: passwordMatcher,
+      validators: optionsUniqueValidator,
     }),
   });
 
@@ -78,3 +79,9 @@ export class AppComponent {
     this.getOptionsForm?.removeAt(i);
   }
 }
+
+new FormArray([
+  new FormGroup({ option: new FormControl() }),
+  new FormGroup({ option: new FormControl() }),
+  new FormGroup({ option: new FormControl() }),
+]);
