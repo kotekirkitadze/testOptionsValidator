@@ -3,7 +3,6 @@ import {
   AbstractControl,
   FormArray,
   FormBuilder,
-  FormControl,
   FormGroup,
 } from '@angular/forms';
 
@@ -26,21 +25,20 @@ function toFindDuplicatesIndices(arry: any[]) {
 export function passwordMatcher(
   c: AbstractControl
 ): { [key: string]: boolean } | null {
-  console.log(c, 'eee');
-  const values = (c as any)['controls'].map(
-    (fg: any) => fg.controls.option.value
+  const values = (c as FormArray<FormGroup>)['controls'].map(
+    (fg: FormGroup) => fg.controls['option'].value
   );
   const repetitive = toFindDuplicatesIndices(values);
-  console.log(repetitive);
-  repetitive.forEach((v) => {
-    (c as any)['controls'][v].setErrors({ bla: true });
+
+  repetitive.forEach((v: number) => {
+    (c as FormArray<FormGroup>)['controls'][v].setErrors({ duplicated: true });
   });
-  console.log(repetitive);
+
   if (repetitive.length) {
     return null;
   } else {
-    (c as any)['controls'].forEach((c: any) => {
-      c.setErrors({ bla: null });
+    (c as FormArray<FormGroup>)['controls'].forEach((c: FormGroup) => {
+      c.setErrors({ duplicated: null });
     });
   }
 
@@ -58,12 +56,10 @@ export class AppComponent {
       validators: passwordMatcher,
     }),
   });
-  title = 'testOptions';
 
   constructor(private fb: FormBuilder) {}
 
   buildOptionForm() {
-    // return new FormControl();
     return this.fb.group({
       option: '',
     });
@@ -82,7 +78,6 @@ export class AppComponent {
   }
 
   bla(a: any, i: any) {
-    console.log(i, a);
-    return a?.errors?.bla;
+    return a?.errors?.duplicated;
   }
 }
